@@ -1,0 +1,1545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Alfredo Pérez Rojas — Cloud Engineer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-void: #120C26;
+    --bg-surface-1: #1C1638;
+    --bg-surface-2: #241D46;
+    --bg-surface-3: #2C2456;
+    --accent-mint: #3EE8A8;
+    --accent-mint-soft: #8FEBC6;
+    --accent-lilac: #9B87F5;
+    --accent-lilac-soft: #C3B6FF;
+    --accent-sky: #7FD4F0;
+    --text-primary: #F2EFFB;
+    --text-muted: #9C93C0;
+    --text-dim: #6E6591;
+    --line-idle: rgba(156,147,192,0.30);
+    --border-soft: rgba(155,135,245,0.16);
+  }
+
+  *{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+
+  body{
+    margin:0;
+    background: var(--bg-void);
+    color: var(--text-primary);
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* ambient background texture (kept only inside the interactive diagram) */
+  .glow-blob{
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(120px);
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.35;
+  }
+  .glow-blob.mint{ width: 480px; height: 480px; background: var(--accent-mint); top: -140px; right: -100px; opacity: 0.16;}
+  .glow-blob.lilac{ width: 560px; height: 560px; background: var(--accent-lilac); top: 260px; left: -220px; opacity: 0.18;}
+
+  a{ color: inherit; text-decoration: none; }
+
+  /* ============ NAV ============ */
+  nav{
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 18px 48px;
+    background: rgba(18,12,38,0.72);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .nav-links{
+    display: flex;
+    justify-content: center;
+    gap: 64px;
+    width: 100%;
+    max-width: 720px;
+  }
+  .nav-links a{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
+    padding: 6px 2px;
+    display: inline-block;
+    transition: transform 0.25s ease, color 0.25s ease;
+    transform-origin: left center;
+  }
+  .nav-links a:hover, .nav-links a:focus-visible{
+    color: var(--accent-mint);
+    transform: scale(1.14);
+  }
+  /* ============ HERO ============ */
+  .hero-wrap{
+    position: relative;
+    z-index: 1;
+    padding: 96px 48px 40px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  .hero-top{
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+  .hero-name{
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: clamp(46px, 7vw, 92px);
+    letter-spacing: 0.02em;
+    margin: 0 0 6px;
+    line-height: 1;
+    background: linear-gradient(100deg, var(--text-primary) 60%, var(--accent-lilac-soft) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .hero-role{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.18em;
+    color: var(--accent-mint);
+    margin: 0 0 20px;
+  }
+  .hero-sub{
+    font-size: 18px;
+    color: var(--text-muted);
+    max-width: 560px;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .hero-side{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 14px;
+  }
+  .cv-btn{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(62,232,168,0.08);
+    border: 1px solid rgba(62,232,168,0.4);
+    color: var(--accent-mint);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.03em;
+    padding: 11px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+  }
+  .cv-btn:hover{
+    background: rgba(62,232,168,0.16);
+    box-shadow: 0 0 22px rgba(62,232,168,0.25);
+    transform: translateY(-1px);
+  }
+  .contact-email{
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+  .contact-email svg{ width: 15px; height: 15px; flex-shrink: 0; }
+  .social-row{
+    display: flex;
+    gap: 18px;
+  }
+  .social-row a{
+    display: flex; align-items: center; justify-content: center;
+    color: var(--accent-lilac-soft);
+    opacity: 0.85;
+    transition: color 0.2s ease, opacity 0.2s ease, transform 0.2s ease;
+  }
+  .social-row a svg{ width: 19px; height: 19px; }
+  .social-row a:hover{
+    color: var(--accent-mint);
+    opacity: 1;
+    transform: translateY(-2px);
+  }
+
+  .meta-strip{
+    display: flex;
+    margin-top: 56px;
+    border-top: 1px solid var(--border-soft);
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .meta-block{
+    flex: 1;
+    padding: 18px 24px;
+    border-right: 1px solid var(--border-soft);
+  }
+  .meta-block:last-child{ border-right: none; }
+  .meta-label{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--text-dim);
+    margin-bottom: 6px;
+  }
+  .meta-value{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    color: var(--text-primary);
+  }
+  .meta-value.accent{ color: var(--accent-mint); }
+
+  /* ============ SECTION SHELL ============ */
+  section{ position: relative; z-index: 1; }
+  .section-inner{
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 90px 48px;
+  }
+  .section-eyebrow{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    color: var(--accent-lilac-soft);
+    margin: 0 0 10px;
+  }
+  .section-title{
+    font-family: 'Fraunces', serif;
+    font-size: clamp(30px, 4vw, 44px);
+    font-weight: 500;
+    margin: 0 0 48px;
+  }
+
+  /* ============ CORE COMPETENCIES DIAGRAM ============ */
+  .diagram-area{
+    position: relative;
+    width: 100%;
+    max-width: 1080px;
+    margin: 0 auto;
+    aspect-ratio: 1000 / 560;
+  }
+  .diagram-area::before{
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    border-radius: 16px;
+    background-image:
+      linear-gradient(rgba(155,135,245,0.09) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(155,135,245,0.09) 1px, transparent 1px);
+    background-size: 42px 42px;
+    mask-image: radial-gradient(ellipse 75% 75% at 50% 50%, black 45%, transparent 92%);
+  }
+  .diagram-svg{
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .diagram-svg line{
+    stroke: var(--line-idle);
+    stroke-width: 1.4;
+    transition: stroke 0.35s ease, stroke-width 0.35s ease, opacity 0.35s ease;
+  }
+  .diagram-svg line.active{
+    stroke: url(#lineGradient);
+    stroke-width: 2.4;
+  }
+  .diagram-svg line.dim{ opacity: 0.25; }
+
+  .node{
+    position: absolute;
+    transform: translate(-50%, -50%);
+    background: var(--bg-surface-2);
+    border: 1px solid var(--border-soft);
+    border-radius: 10px;
+    padding: 14px 18px;
+    min-width: 168px;
+    cursor: pointer;
+    transition: border-color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease, transform 0.2s ease;
+  }
+  .node:hover, .node.active, .node:focus-visible{
+    border-color: var(--accent-mint);
+    background: var(--bg-surface-3);
+    box-shadow: 0 0 28px rgba(62,232,168,0.18);
+    transform: translate(-50%, -50%) scale(1.04);
+  }
+  .node.dim{ opacity: 0.5; }
+  .node-title{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+  }
+  .node.active .node-title, .node:hover .node-title{ color: var(--accent-mint-soft); }
+  .node-chips{ display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    font-weight: 500;
+    color: var(--accent-sky);
+    background: rgba(127,212,240,0.10);
+    border: 1px solid rgba(127,212,240,0.28);
+    padding: 2px 7px;
+    border-radius: 4px;
+  }
+
+  .node-center{
+    position: absolute;
+    left: 48%; top: 50%;
+    transform: translate(-50%, -50%);
+    width: 150px; height: 150px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, var(--bg-surface-3), var(--bg-void));
+    border: 1px solid var(--accent-mint);
+    box-shadow: 0 0 40px rgba(62,232,168,0.22);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center;
+    z-index: 3;
+  }
+  .node-center::before{
+    content:'';
+    position: absolute;
+    inset: -14px;
+    border-radius: 50%;
+    border: 1px solid rgba(62,232,168,0.25);
+    animation: pulse-ring 3.2s ease-out infinite;
+  }
+  @keyframes pulse-ring{
+    0%{ transform: scale(0.9); opacity: 0.8; }
+    100%{ transform: scale(1.35); opacity: 0; }
+  }
+  .node-center-title{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    color: var(--accent-mint);
+  }
+  .node-center-sub{
+    font-family: 'Inter', sans-serif;
+    font-size: 10.5px;
+    color: var(--text-dim);
+    margin-top: 4px;
+    max-width: 110px;
+  }
+
+  /* ============ DETAIL PANEL ============ */
+  .detail-panel{
+    margin-top: 56px;
+    max-width: 780px;
+    padding: 26px 30px;
+    border-left: 3px solid var(--accent-mint);
+    background: linear-gradient(90deg, rgba(62,232,168,0.06), transparent 60%);
+    border-radius: 4px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-4px);
+    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+  }
+  .detail-panel.visible{
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+  .detail-title{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-primary);
+    margin: 0 0 12px;
+  }
+  .detail-desc{
+    color: var(--text-muted);
+    font-size: 15px;
+    line-height: 1.65;
+    margin: 0 0 18px;
+    max-width: 620px;
+  }
+  .detail-meta{
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+  .detail-meta-block .meta-label{ margin-bottom: 4px; }
+  .detail-meta-block .meta-value{ font-size: 15px; }
+  .detail-chips{ display: flex; gap: 8px; flex-wrap: wrap; }
+
+  /* mobile fallback: stacked accordion instead of diagram */
+  .mobile-list{ display: none; }
+
+  @media (max-width: 860px){
+    nav{ padding: 16px 20px; }
+    .nav-links{ gap: 20px; }
+    .hero-wrap{ padding: 64px 20px 30px; }
+    .hero-side{ align-items: flex-start; width: 100%; }
+    .meta-strip{ flex-direction: column; }
+    .meta-block{ border-right: none; border-bottom: 1px solid var(--border-soft); }
+    .section-inner{ padding: 60px 20px; }
+
+    .diagram-area{ display: none; }
+    .detail-panel{ display: none; }
+    .mobile-list{ display: flex; flex-direction: column; gap: 12px; max-width: 640px; margin: 0 auto; }
+    .mobile-item{
+      background: var(--bg-surface-2);
+      border: 1px solid var(--border-soft);
+      border-radius: 10px;
+      padding: 16px 18px;
+      cursor: pointer;
+    }
+    .mobile-item-head{
+      display: flex; justify-content: space-between; align-items: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px; letter-spacing: 0.05em; text-transform: uppercase;
+      color: var(--text-primary);
+    }
+    .mobile-item-body{
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+    .mobile-item.open .mobile-item-body{ max-height: 320px; margin-top: 12px; }
+    .mobile-item.open{ border-color: var(--accent-mint); }
+    .mobile-item-desc{ color: var(--text-muted); font-size: 13.5px; line-height: 1.6; margin: 0 0 12px; }
+  }
+
+  /* ============ EXPERIENCE ============ */
+  .exp-grid{
+    display: grid;
+    grid-template-columns: 1.7fr 1fr;
+    gap: 56px;
+    align-items: start;
+  }
+  .exp-col-label{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    letter-spacing: 0.14em;
+    color: var(--text-dim);
+    margin: 0 0 22px;
+  }
+
+  .exp-timeline{
+    position: relative;
+    padding-left: 26px;
+  }
+  .exp-timeline::before{
+    content: '';
+    position: absolute;
+    left: 5px; top: 6px; bottom: 6px;
+    width: 1.5px;
+    background: linear-gradient(var(--accent-mint), var(--accent-lilac) 60%, transparent);
+    opacity: 0.5;
+  }
+  .exp-item{ position: relative; margin-bottom: 26px; }
+  .exp-item:last-child{ margin-bottom: 0; }
+  .exp-dot{
+    position: absolute;
+    left: -26px; top: 22px;
+    width: 11px; height: 11px;
+    border-radius: 50%;
+    background: var(--bg-void);
+    border: 2px solid var(--accent-lilac);
+  }
+  .exp-item.current .exp-dot{
+    background: var(--accent-mint);
+    border-color: var(--accent-mint);
+    box-shadow: 0 0 10px rgba(62,232,168,0.6);
+  }
+
+  .exp-card{
+    background: var(--bg-surface-1);
+    border: 1px solid var(--border-soft);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .exp-card-head{
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 14px 20px;
+    background: linear-gradient(90deg, rgba(62,232,168,0.14), rgba(155,135,245,0.08));
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .exp-role{
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 17px;
+    color: var(--text-primary);
+  }
+  .exp-date{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--accent-mint-soft);
+    text-align: right;
+  }
+  .exp-location{
+    display: block;
+    font-family: 'Inter', sans-serif;
+    font-style: italic;
+    font-size: 11.5px;
+    color: var(--text-dim);
+    margin-top: 2px;
+  }
+  .exp-body{ padding: 18px 20px 20px; }
+  .exp-company{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    color: var(--accent-lilac-soft);
+    margin: 0 0 10px;
+  }
+  .exp-desc{
+    color: var(--text-muted);
+    font-size: 14.5px;
+    line-height: 1.65;
+    margin: 0 0 16px;
+  }
+  .exp-badges{ display: flex; flex-wrap: wrap; gap: 7px; }
+  .badge-metric{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.02em;
+    color: var(--accent-mint);
+    background: rgba(62,232,168,0.10);
+    border: 1px solid rgba(62,232,168,0.32);
+    padding: 3px 8px;
+    border-radius: 4px;
+  }
+
+  /* sidebar: certifications + education */
+  .exp-sidebar{ display: flex; flex-direction: column; gap: 44px; }
+  .cert-card{
+    background: var(--bg-surface-1);
+    border: 1px solid var(--border-soft);
+    border-radius: 10px;
+    padding: 18px 20px;
+  }
+  .cert-name{
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 14.5px;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 4px;
+  }
+  .cert-name svg{ width: 16px; height: 16px; color: var(--accent-mint); flex-shrink: 0; }
+  .cert-issuer{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--text-dim);
+    margin: 0 0 12px;
+  }
+  .status-badge{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    color: var(--accent-mint);
+    background: rgba(62,232,168,0.12);
+    border: 1px solid rgba(62,232,168,0.35);
+    padding: 3px 9px;
+    border-radius: 4px;
+  }
+  .edu-card{
+    background: var(--bg-surface-1);
+    border: 1px solid var(--border-soft);
+    border-radius: 10px;
+    padding: 18px 20px;
+  }
+  .edu-degree{
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 15.5px;
+    color: var(--text-primary);
+    margin: 0 0 6px;
+  }
+  .edu-school{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--accent-lilac-soft);
+    margin: 0 0 4px;
+  }
+  .edu-meta{
+    font-family: 'Inter', sans-serif;
+    font-size: 12.5px;
+    color: var(--text-dim);
+  }
+
+  @media (max-width: 900px){
+    .exp-grid{ grid-template-columns: 1fr; }
+  }
+
+  /* ============ PLACEHOLDER SECTIONS ============ */
+  .placeholder-card{
+    background: var(--bg-surface-1);
+    border: 1px dashed var(--border-soft);
+    border-radius: 12px;
+    padding: 40px;
+    color: var(--text-muted);
+    font-size: 15px;
+    line-height: 1.7;
+    max-width: 720px;
+  }
+  .project-grid{
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+  }
+  .project-card{
+    position: relative;
+    background: var(--bg-surface-2);
+    border: 1px solid var(--border-soft);
+    border-radius: 12px;
+    padding: 28px;
+    transition: border-color 0.25s ease, transform 0.2s ease;
+  }
+  .project-card:hover{ border-color: var(--accent-lilac); transform: translateY(-3px); }
+  .project-card h3{
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 19px;
+    margin: 0 0 10px;
+    color: var(--text-primary);
+  }
+  .project-card p{ color: var(--text-muted); font-size: 13.5px; line-height: 1.6; margin: 0; }
+
+  /* card with a permanent thumbnail + hover title effect */
+  .project-card--preview{ cursor: pointer; padding: 0; overflow: hidden; }
+  .project-card--preview .project-content{ padding: 22px 24px 26px; }
+  .project-thumb{
+    width: 100%;
+    height: 150px;
+    overflow: hidden;
+    background: var(--bg-void);
+  }
+  .project-thumb img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 15%;
+    display: block;
+    transition: transform 0.4s ease;
+  }
+  .project-card--preview:hover .project-thumb img{ transform: scale(1.05); }
+
+  .project-title-hover{
+    display: inline-block;
+    background: linear-gradient(90deg, var(--text-primary), var(--text-primary));
+    background-size: 0% 2px;
+    background-repeat: no-repeat;
+    background-position: left bottom;
+    padding-bottom: 3px;
+    transition: color 0.3s ease, background-size 0.35s ease, letter-spacing 0.3s ease;
+  }
+  .project-card--preview:hover .project-title-hover{
+    background-image: linear-gradient(90deg, var(--accent-mint), var(--accent-lilac));
+    background-size: 100% 2px;
+    color: var(--accent-mint-soft);
+    letter-spacing: 0.015em;
+  }
+
+  /* card with a hover image preview */
+  .project-card--preview{ cursor: pointer; }
+  .project-card--preview .project-content{
+    transition: opacity 0.25s ease;
+  }
+  .project-card--preview:hover .project-content{ opacity: 0.35; }
+
+  /* floating glass preview panel */
+  .project-preview{
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: min(640px, 94%);
+    transform: translate(-50%, -14px) scale(0.96);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 20;
+    border-radius: 20px;
+    overflow: hidden;
+    background: linear-gradient(150deg, rgba(255,255,255,0.10), rgba(155,135,245,0.14) 55%, rgba(62,232,168,0.10));
+    -webkit-backdrop-filter: blur(22px) saturate(160%);
+    backdrop-filter: blur(22px) saturate(160%);
+    border: 1px solid rgba(255,255,255,0.22);
+    box-shadow: 0 24px 70px rgba(9,6,20,0.55), inset 0 1px 0 rgba(255,255,255,0.16);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+  .project-preview.active{
+    opacity: 1;
+    transform: translate(-50%, -34px) scale(1);
+  }
+  .project-preview::after{
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(120deg, rgba(255,255,255,0.16), transparent 40%, rgba(62,232,168,0.10) 75%);
+    mix-blend-mode: overlay;
+    animation: sheen-drift 7s ease-in-out infinite;
+    background-size: 220% 220%;
+  }
+  .project-preview-imgwrap{
+    width: 100%;
+    padding: 14px 14px 0;
+  }
+  @keyframes sheen-drift{
+    0%, 100%{ background-position: 0% 0%; }
+    50%{ background-position: 100% 100%; }
+  }
+  .project-preview img{
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 62vh;
+    object-fit: contain;
+    border-radius: 12px;
+  }
+  .project-preview-caption{
+    padding: 12px 18px 16px;
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 15px;
+    color: var(--text-primary);
+  }
+
+  .contact-block{
+    display: flex;
+    gap: 60px;
+    flex-wrap: wrap;
+  }
+  .contact-cta{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    color: var(--accent-mint);
+    border: 1px solid rgba(62,232,168,0.4);
+    padding: 12px 22px;
+    border-radius: 8px;
+    display: inline-block;
+    transition: background 0.2s ease;
+  }
+  .contact-cta:hover{ background: rgba(62,232,168,0.1); }
+
+  footer{
+    position: relative; z-index: 1;
+    text-align: center;
+    padding: 30px 20px 40px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    color: var(--text-dim);
+    border-top: 1px solid var(--border-soft);
+  }
+
+  /* ============ INTERACTIVE DIAGRAM MODAL ============ */
+  .modal-backdrop{
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+    background: rgba(9,6,20,0.72);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+  }
+  .modal-backdrop.active{ opacity: 1; pointer-events: auto; }
+
+  .modal-panel{
+    position: relative;
+    width: min(1160px, 96vw);
+    max-height: 90vh;
+    overflow: auto;
+    background: linear-gradient(160deg, rgba(28,22,56,0.97), rgba(36,29,70,0.97));
+    border: 1px solid var(--border-soft);
+    border-radius: 20px;
+    padding: 34px 26px 26px;
+    box-shadow: 0 30px 90px rgba(6,4,16,0.6);
+    transform: translateY(14px) scale(0.98);
+    transition: transform 0.3s ease;
+  }
+  .modal-backdrop.active .modal-panel{ transform: translateY(0) scale(1); }
+
+  .modal-close{
+    position: absolute;
+    top: 16px; right: 16px;
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    border: 1px solid var(--border-soft);
+    background: rgba(255,255,255,0.04);
+    color: var(--text-muted);
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+  }
+  .modal-close:hover{
+    color: var(--accent-mint);
+    border-color: var(--accent-mint);
+    background: rgba(62,232,168,0.08);
+  }
+
+  .modal-title{
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: clamp(18px, 2.4vw, 23px);
+    margin: 0 0 22px;
+    text-align: center;
+    color: var(--text-primary);
+  }
+
+  .modal-diagram-wrap{ position: relative; }
+  .modal-diagram-wrap svg{ width: 100%; height: auto; display: block; }
+
+  .diagram-tooltip{
+    position: absolute;
+    z-index: 10;
+    pointer-events: none;
+    background: rgba(18,12,38,0.96);
+    border: 1px solid var(--accent-mint);
+    color: var(--accent-mint-soft);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.03em;
+    padding: 6px 11px;
+    border-radius: 6px;
+    white-space: nowrap;
+    box-shadow: 0 10px 24px rgba(0,0,0,0.45);
+    opacity: 0;
+    transform: translate(-50%, -132%);
+    transition: opacity 0.15s ease;
+  }
+  .diagram-tooltip.visible{ opacity: 1; }
+
+  .hotspot{ color: var(--text-muted); cursor: pointer; }
+  .hotspot .hit{ fill: transparent; transition: fill 0.2s ease; }
+  .hotspot:hover{ color: var(--accent-mint); }
+  .hotspot:hover .hit{ fill: rgba(62,232,168,0.06); }
+  .hotspot .node-label{ fill: var(--text-muted); transition: fill 0.2s ease; }
+  .hotspot:hover .node-label{ fill: var(--text-primary); }
+  .hotspot .icon-shape, .hotspot text{ transition: filter 0.2s ease; }
+  .hotspot:hover .icon-shape{ filter: drop-shadow(0 0 5px rgba(62,232,168,0.45)); }
+
+  .diagram-group-label{
+    font-family: 'JetBrains Mono', monospace;
+    fill: var(--text-dim);
+  }
+  .diagram-flow-label{
+    font-family: 'Inter', sans-serif;
+    fill: var(--text-dim);
+  }
+</style>
+</head>
+<body>
+
+<div class="glow-blob mint"></div>
+<div class="glow-blob lilac"></div>
+
+<nav>
+  <div class="nav-links">
+    <a href="#home">Home</a>
+    <a href="#experience">Experience</a>
+    <a href="#projects">Projects</a>
+    <a href="#contact">Contact</a>
+  </div>
+</nav>
+
+<section id="home">
+  <div class="hero-wrap">
+    <div class="hero-top">
+      <div>
+        <h1 class="hero-name">Alfredo Pérez Rojas</h1>
+        <p class="hero-role">CLOUD ENGINEER</p>
+        <p class="hero-sub">Focus on AWS cloud solutions, from design to implementation and support of scalable, resilient, and cost-effective architectures.</p>
+      </div>
+
+      <div class="hero-side">
+        <button class="cv-btn" id="downloadCvBtn">⬇ Download CV</button>
+        <div class="contact-email">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="4.5" width="19" height="15" rx="2.2"/><path d="M3 6.5l9 6.5 9-6.5"/></svg>
+          alfredo.perez.rojas@outlook.es
+        </div>
+        <div class="social-row">
+          <a href="#" aria-label="LinkedIn" title="LinkedIn (link coming soon)">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5C4.98 4.88 3.9 6 2.5 6S0 4.88 0 3.5 1.12 1 2.52 1 4.98 2.12 4.98 3.5zM.5 8.24h4V23h-4V8.24zM8.5 8.24h3.83v2.01h.05c.53-1 1.85-2.06 3.8-2.06 4.07 0 4.82 2.68 4.82 6.16V23h-4v-6.7c0-1.6-.03-3.65-2.22-3.65-2.23 0-2.57 1.74-2.57 3.54V23h-4V8.24z"/></svg>
+          </a>
+          <a href="#" aria-label="GitHub" title="GitHub (link coming soon)">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.1.79-.25.79-.56 0-.27-.01-1.17-.02-2.12-3.2.7-3.88-1.36-3.88-1.36-.52-1.33-1.28-1.68-1.28-1.68-1.04-.71.08-.7.08-.7 1.16.08 1.76 1.19 1.76 1.19 1.03 1.76 2.69 1.25 3.34.96.1-.75.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.25.45-2.28 1.18-3.08-.12-.29-.51-1.46.11-3.04 0 0 .96-.31 3.15 1.18a10.9 10.9 0 0 1 5.74 0c2.19-1.49 3.15-1.18 3.15-1.18.63 1.58.23 2.75.11 3.04.74.8 1.18 1.83 1.18 3.08 0 4.41-2.69 5.38-5.25 5.67.41.36.78 1.06.78 2.13 0 1.54-.01 2.78-.01 3.16 0 .31.21.67.8.56C20.71 21.38 24 17.07 24 12 24 5.65 18.35.5 12 .5z"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="meta-strip">
+      <div class="meta-block">
+        <div class="meta-label">LAST UPDATED</div>
+        <div class="meta-value">2026-08-01</div>
+      </div>
+      <div class="meta-block">
+        <div class="meta-label">LOCATION</div>
+        <div class="meta-value">Puebla, Mexico</div>
+      </div>
+      <div class="meta-block">
+        <div class="meta-label">AVAILABILITY</div>
+        <div class="meta-value accent">OPEN TO OPPORTUNITIES</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-inner" style="padding-top: 70px;">
+    <h2 class="section-title">Core Competencies</h2>
+
+    <div class="diagram-area" id="diagramArea">
+      <svg class="diagram-svg" id="diagramSvg" viewBox="0 0 1000 560" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#3EE8A8"/>
+            <stop offset="100%" stop-color="#9B87F5"/>
+          </linearGradient>
+        </defs>
+        <!-- lines injected by JS -->
+      </svg>
+
+      <div class="node-center">
+        <div class="node-center-title">ENGINEER CORE</div>
+        <div class="node-center-sub">7+ years across cloud &amp; distributed systems</div>
+      </div>
+
+      <!-- nodes injected by JS -->
+    </div>
+
+    <div class="mobile-list" id="mobileList"></div>
+
+    <div class="detail-panel" id="detailPanel">
+      <div class="detail-title" id="detailTitle">Infrastructure as Code</div>
+      <p class="detail-desc" id="detailDesc">Terraform module development, state management, and multi-environment workflows. Some experience with Pulumi and AWS CDK for specialized use cases.</p>
+      <div class="detail-meta">
+        <div class="detail-meta-block">
+          <div class="meta-label">EXPERIENCE</div>
+          <div class="meta-value" id="detailExp">6 years</div>
+        </div>
+        <div class="detail-chips" id="detailChips">
+          <span class="chip">TERRAFORM</span><span class="chip">PULUMI</span><span class="chip">ANSIBLE</span><span class="chip">CDK</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="experience">
+  <div class="section-inner">
+    <p class="section-eyebrow">BACKGROUND</p>
+    <h2 class="section-title">Experience</h2>
+
+    <div class="exp-grid">
+      <div>
+        <p class="exp-col-label">PROFESSIONAL EXPERIENCE</p>
+        <div class="exp-timeline">
+
+          <div class="exp-item current">
+            <div class="exp-dot"></div>
+            <div class="exp-card">
+              <div class="exp-card-head">
+                <span class="exp-role">DevOps Engineer</span>
+                <span class="exp-date">May 2023 – Present<span class="exp-location">Remote</span></span>
+              </div>
+              <div class="exp-body">
+                <p class="exp-company">@ TCS</p>
+                <p class="exp-desc">Building and maintaining CI/CD pipelines for application components, orchestrating deployments and resolving code integration issues to keep releases stable across non-production and production environments.</p>
+                <div class="exp-badges">
+                  <span class="badge-metric">CI/CD PIPELINES</span>
+                  <span class="badge-metric">BITBUCKET</span>
+                  <span class="badge-metric">GIT</span>
+                  <span class="badge-metric">JENKINS</span>
+                  <span class="badge-metric">RLM</span>
+                  <span class="badge-metric">NON-PRODUCTION</span>
+                  <span class="badge-metric">PRODUCTION ONBOARDING</span>
+                  <span class="badge-metric">CODE INTEGRATION</span>
+                  <span class="badge-metric">DEPLOYMENT INCIDENTS</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="exp-item">
+            <div class="exp-dot"></div>
+            <div class="exp-card">
+              <div class="exp-card-head">
+                <span class="exp-role">Production Support Engineer</span>
+                <span class="exp-date">Feb 2021 – Apr 2023<span class="exp-location">Remote</span></span>
+              </div>
+              <div class="exp-body">
+                <p class="exp-company">@ TCS</p>
+                <p class="exp-desc">Collaborated across API, middleware, legacy backend, and telephony teams to troubleshoot production incidents through log analysis and technical sessions, while running daily monitoring to keep platforms stable.</p>
+                <div class="exp-badges">
+                  <span class="badge-metric">TROUBLESHOOT</span>
+                  <span class="badge-metric">LOG ANALYSIS</span>
+                  <span class="badge-metric">TECHNICAL SESSIONS</span>
+                  <span class="badge-metric">MONITORING ACTIVITIES</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="exp-item">
+            <div class="exp-dot"></div>
+            <div class="exp-card">
+              <div class="exp-card-head">
+                <span class="exp-role">IT Project Manager</span>
+                <span class="exp-date">May 2018 – Apr 2019<span class="exp-location">Mexico City</span></span>
+              </div>
+              <div class="exp-body">
+                <p class="exp-company">@ AXA Seguros México</p>
+                <p class="exp-desc">Led a technical project tied to a key enterprise platform, managing budget and resources while driving strategic decisions and reporting to PMO and CIO leadership.</p>
+                <div class="exp-badges">
+                  <span class="badge-metric">BAU COST SAVINGS</span>
+                  <span class="badge-metric">SOFTWARE</span>
+                  <span class="badge-metric">DECOUPLING</span>
+                  <span class="badge-metric">HA</span>
+                  <span class="badge-metric">OPTIMIZATION</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="exp-item">
+            <div class="exp-dot"></div>
+            <div class="exp-card">
+              <div class="exp-card-head">
+                <span class="exp-role">IT Analyst (Graduate Program)</span>
+                <span class="exp-date">Mar 2016 – Apr 2018<span class="exp-location">Mexico City</span></span>
+              </div>
+              <div class="exp-body">
+                <p class="exp-company">@ AXA Seguros México</p>
+                <p class="exp-desc">Built cross-functional expertise across software development, business analysis, IT architecture, and project management through end-to-end ownership of real-world enterprise deliverables.</p>
+                <div class="exp-badges">
+                  <span class="badge-metric">SOFTWARE DEVELOPMENT</span>
+                  <span class="badge-metric">JAVASCRIPT FRONT-END</span>
+                  <span class="badge-metric">RDBMS</span>
+                  <span class="badge-metric">BACK-END</span>
+                  <span class="badge-metric">BUSINESS ANALYSIS</span>
+                  <span class="badge-metric">IT ARCHITECTURE</span>
+                  <span class="badge-metric">BUSINESS RELATIONSHIP MANAGEMENT</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="exp-sidebar">
+        <div>
+          <p class="exp-col-label">CERTIFICATIONS</p>
+          <div class="cert-card">
+            <p class="cert-name">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12.5l2.5 2.5L16 9"/></svg>
+              AWS Solutions Architect — Professional
+            </p>
+            <p class="cert-issuer">Amazon Web Services, 2020</p>
+            <span class="status-badge">ACTIVE</span>
+          </div>
+        </div>
+
+        <div>
+          <p class="exp-col-label">EDUCATION</p>
+          <div class="edu-card">
+            <p class="edu-degree">B.S. Electronic and Computer Engineering</p>
+            <p class="edu-school">Tecnológico de Monterrey</p>
+            <p class="edu-meta">2009 – 2015 · Puebla, Mex</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section id="projects">
+  <div class="section-inner">
+    <p class="section-eyebrow">SELECTED WORK</p>
+    <h2 class="section-title">Projects</h2>
+    <div class="project-grid">
+      <div class="project-card project-card--preview" id="projectAwsPipeline">
+        <div class="project-thumb">
+          <img src="aws-pipeline-diagram-cropped.png" alt="AWS Data Pipeline Architecture diagram thumbnail">
+        </div>
+        <div class="project-content">
+          <h3><span class="project-title-hover">AWS Data Pipeline: CSV to Insight</span></h3>
+          <p>Serverless ETL pipeline on AWS — from raw CSV ingestion through Glue cataloging and transformation to a QuickSight dashboard.</p>
+        </div>
+
+        <div class="project-preview" id="projectAwsPipelinePreview">
+          <div class="project-preview-imgwrap">
+            <img src="aws-pipeline-diagram.png" alt="AWS Data Pipeline Architecture: From CSV to Insight">
+          </div>
+          <div class="project-preview-caption">AWS Data Pipeline Architecture: From CSV to Insight</div>
+        </div>
+      </div>
+      <div class="project-card">
+        <h3>Project coming soon</h3>
+        <p>Placeholder card — ready to be replaced with real project content.</p>
+      </div>
+      <div class="project-card">
+        <h3>Project coming soon</h3>
+        <p>Placeholder card — ready to be replaced with real project content.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="section-inner">
+    <p class="section-eyebrow">GET IN TOUCH</p>
+    <h2 class="section-title">Contact</h2>
+    <div class="contact-block">
+      <div>
+        <p style="color: var(--text-muted); max-width: 420px; line-height: 1.6; margin-top: 0;">Open to new roles and collaborations in cloud infrastructure and platform engineering.</p>
+        <a class="contact-cta" href="mailto:alfredo.perez.rojas@outlook.es">Send an email →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>© 2026 Alfredo Pérez Rojas — built with care.</footer>
+
+<div class="modal-backdrop" id="pipelineModalBackdrop">
+  <div class="modal-panel" id="pipelineModalPanel">
+    <button class="modal-close" id="pipelineModalClose" aria-label="Close">×</button>
+    <h3 class="modal-title">AWS Data Pipeline Architecture: From CSV to Insight</h3>
+    <div class="modal-diagram-wrap" id="pipelineDiagramWrap">
+      <div class="diagram-tooltip" id="diagramTooltip">test</div>
+      <svg id="pipelineSvg" viewBox="0 0 1280 500" xmlns="http://www.w3.org/2000/svg"></svg>
+    </div>
+  </div>
+</div>
+
+<script>
+  const competencies = [
+    {
+      id: 'cloud',
+      title: 'Cloud Platforms',
+      x: 14, y: 20,
+      chips: ['AWS', 'GCP', 'AZURE'],
+      desc: 'Design and operate production workloads across AWS, GCP, and Azure — from networking and IAM to cost-optimized compute and storage architectures.',
+      exp: '7 years'
+    },
+    {
+      id: 'containers',
+      title: 'Containers & Orchestration',
+      x: 48, y: 16,
+      chips: ['KUBERNETES', 'DOCKER', 'HELM'],
+      desc: 'Package, deploy, and scale containerized services with Kubernetes, building resilient clusters and CI-friendly Docker workflows.',
+      exp: '6 years'
+    },
+    {
+      id: 'iac',
+      title: 'Infrastructure as Code',
+      x: 83, y: 25,
+      chips: ['TERRAFORM', 'PULUMI', 'ANSIBLE', 'CDK'],
+      desc: 'Terraform module development, state management, and multi-environment workflows. Some experience with Pulumi and AWS CDK for specialized use cases.',
+      exp: '6 years'
+    },
+    {
+      id: 'cicd',
+      title: 'CI/CD Pipelines',
+      x: 14, y: 82,
+      chips: ['GITHUB ACTIONS', 'ARGOCD', 'GITLAB CI'],
+      desc: 'Build automated delivery pipelines that ship code safely and often, with GitOps-driven deployments and progressive rollout strategies.',
+      exp: '5 years'
+    },
+    {
+      id: 'observability',
+      title: 'Observability',
+      x: 48, y: 86,
+      chips: ['PROMETHEUS', 'GRAFANA', 'DATADOG'],
+      desc: 'Instrument systems for visibility into performance and reliability, turning metrics, logs, and traces into actionable signals.',
+      exp: '4 years'
+    },
+    {
+      id: 'programming',
+      title: 'Programming',
+      x: 83, y: 79,
+      chips: ['GO', 'PYTHON', 'BASH'],
+      desc: 'Write clean, maintainable automation and tooling in Go and Python, with Bash for day-to-day systems scripting.',
+      exp: '8 years'
+    }
+  ];
+
+  const centerX = 48, centerY = 50;
+  const svg = document.getElementById('diagramSvg');
+  const area = document.getElementById('diagramArea');
+  const mobileList = document.getElementById('mobileList');
+  const detailPanel = document.getElementById('detailPanel');
+  const CENTER_PX = centerX * 10, CENTER_PY = centerY * 5.6;
+  const START_OFFSET = 78; // keeps the line clear of the center circle for every direction
+  const END_OFFSET = 14;   // keeps the line clear of the node box
+
+  // build lines + nodes
+  competencies.forEach(c => {
+    const nx = c.x * 10, ny = c.y * 5.6;
+    const dx = nx - CENTER_PX, dy = ny - CENTER_PY;
+    const len = Math.sqrt(dx * dx + dy * dy) || 1;
+    const ux = dx / len, uy = dy / len;
+
+    const line = document.createElementNS('http://www.w3.org/2000/svg','line');
+    line.setAttribute('x1', CENTER_PX + ux * START_OFFSET);
+    line.setAttribute('y1', CENTER_PY + uy * START_OFFSET);
+    line.setAttribute('x2', nx - ux * END_OFFSET);
+    line.setAttribute('y2', ny - uy * END_OFFSET);
+    line.dataset.id = c.id;
+    svg.appendChild(line);
+
+    const node = document.createElement('div');
+    node.className = 'node';
+    node.style.left = c.x + '%';
+    node.style.top = c.y + '%';
+    node.tabIndex = 0;
+    node.dataset.id = c.id;
+    node.innerHTML = `
+      <div class="node-title">${c.title}</div>
+      <div class="node-chips">${c.chips.map(ch => `<span class="chip">${ch}</span>`).join('')}</div>
+    `;
+    area.appendChild(node);
+
+    node.addEventListener('mouseenter', () => setActive(c.id));
+    node.addEventListener('focus', () => setActive(c.id));
+    node.addEventListener('click', () => setActive(c.id));
+
+    // mobile accordion
+    const mItem = document.createElement('div');
+    mItem.className = 'mobile-item';
+    mItem.innerHTML = `
+      <div class="mobile-item-head">${c.title} <span>+</span></div>
+      <div class="mobile-item-body">
+        <p class="mobile-item-desc">${c.desc}</p>
+        <div class="detail-meta">
+          <div class="detail-meta-block">
+            <div class="meta-label">EXPERIENCE</div>
+            <div class="meta-value">${c.exp}</div>
+          </div>
+          <div class="detail-chips">${c.chips.map(ch => `<span class="chip">${ch}</span>`).join('')}</div>
+        </div>
+      </div>
+    `;
+    mItem.addEventListener('click', () => {
+      const isOpen = mItem.classList.contains('open');
+      document.querySelectorAll('.mobile-item').forEach(i => i.classList.remove('open'));
+      if(!isOpen) mItem.classList.add('open');
+    });
+    mobileList.appendChild(mItem);
+  });
+
+  function setActive(id){
+    const data = competencies.find(c => c.id === id);
+    if(!data) return;
+
+    document.querySelectorAll('.node').forEach(n => {
+      n.classList.toggle('active', n.dataset.id === id);
+      n.classList.toggle('dim', n.dataset.id !== id);
+    });
+    document.querySelectorAll('.diagram-svg line').forEach(l => {
+      l.classList.toggle('active', l.dataset.id === id);
+      l.classList.toggle('dim', l.dataset.id !== id);
+    });
+
+    document.getElementById('detailTitle').textContent = data.title;
+    document.getElementById('detailDesc').textContent = data.desc;
+    document.getElementById('detailExp').textContent = data.exp;
+    document.getElementById('detailChips').innerHTML = data.chips.map(ch => `<span class="chip">${ch}</span>`).join('');
+    detailPanel.classList.add('visible');
+  }
+
+  function clearActive(){
+    document.querySelectorAll('.node').forEach(n => n.classList.remove('active','dim'));
+    document.querySelectorAll('.diagram-svg line').forEach(l => l.classList.remove('active','dim'));
+    detailPanel.classList.remove('visible');
+  }
+
+  area.addEventListener('mouseleave', clearActive);
+  area.addEventListener('focusout', (e) => {
+    if(!area.contains(e.relatedTarget)) clearActive();
+  });
+
+  // ---- Project 1: hover glass preview ----
+  const awsCard = document.getElementById('projectAwsPipeline');
+  const awsPreview = document.getElementById('projectAwsPipelinePreview');
+  if(awsCard && awsPreview){
+    awsCard.addEventListener('mouseenter', () => awsPreview.classList.add('active'));
+    awsCard.addEventListener('mouseleave', () => awsPreview.classList.remove('active'));
+  }
+
+  // ---- Download CV (placeholder image for now) ----
+  document.getElementById('downloadCvBtn').addEventListener('click', () => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 850; canvas.height = 1100;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#120C26';
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.strokeStyle = 'rgba(155,135,245,0.3)';
+    ctx.strokeRect(30,30,canvas.width-60,canvas.height-60);
+    ctx.fillStyle = '#3EE8A8';
+    ctx.font = '38px Georgia';
+    ctx.fillText('Alfredo Pérez Rojas', 70, 140);
+    ctx.fillStyle = '#9C93C0';
+    ctx.font = '20px Arial';
+    ctx.fillText('Cloud Engineer — CV placeholder', 70, 180);
+    ctx.fillStyle = '#6E6591';
+    ctx.font = '15px Arial';
+    ctx.fillText('This is a test download. The real CV file will replace this.', 70, 230);
+
+    canvas.toBlob(blob => {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'Alfredo-Perez-Rojas-CV-placeholder.png';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
+  });
+</script>
+
+<script>
+  // ================= INTERACTIVE PIPELINE DIAGRAM =================
+  (function(){
+    const NS = 'http://www.w3.org/2000/svg';
+
+    const nodes = [
+      { id:'csvfile',       type:'file',    cx:85,   cy:230, badge:1, label:['CSV File'] },
+      { id:'rawbucket',     type:'bucket',  cx:255,  cy:230, tint:'neutral', label:['csv-raw-data','bucket'] },
+      { id:'lambda',        type:'lambda',  cx:445,  cy:130, badge:2, label:['Lambda'] },
+      { id:'processedbucket', type:'bucket', cx:555, cy:230, badge:3, tint:'mint', label:['CSV processed-','data-bucket'] },
+      { id:'crawler',       type:'bug',     cx:555,  cy:400, badge:4, label:['4. AWS Glue','Crawler'] },
+      { id:'catalog',       type:'catalog', cx:745,  cy:400, badge:5, label:['5. AWS Glue','Data Catalog'] },
+      { id:'gluejob',       type:'funnel',  cx:850,  cy:110, badge:6, label:['Glue Job'] },
+      { id:'source',        type:'box',     cx:850,  cy:265, w:110, h:50, label:['Source'] },
+      { id:'transformbox',  type:'box',     cx:1070, cy:150, w:170, h:80, tint:'mint', label:['Transformation /','Change Schema'] },
+      { id:'finalbucket',   type:'bucket',  cx:1200, cy:270, tint:'neutral', label:['csv final','data bucket'], labelSide:'left' },
+      { id:'quicksight',    type:'chart',   cx:1200, cy:400, badge:7, label:['7. AWS QuickSight','Dashboard'] }
+    ];
+
+    const groupLabels = [
+      { x:170,  y:34, lines:['Ingestion'] },
+      { x:500,  y:20, lines:['Storage &','Indexing'] },
+      { x:965,  y:34, lines:['Transformation'] },
+      { x:1200, y:34, lines:['Visualization'] }
+    ];
+
+    const connectors = [
+      { d:'M108,230 L232,230' },
+      { d:'M255,206 L255,130 L419,130' },
+      { d:'M457,153 L522,207' },
+      { d:'M555,254 L555,375', label:'Register Schema', lx:625, ly:315 },
+      { d:'M579,252 L742,376', label:'Catalog Schema', lx:660, ly:315 },
+      { d:'M579,400 L721,400' },
+      { d:'M745,376 L745,320 L800,292' },
+      { d:'M579,232 L793,264' },
+      { d:'M850,137 L850,193' },
+      { d:'M850,197 L850,239' },
+      { d:'M845,190 L983,192' },
+      { d:'M1155,150 L1200,150 L1200,246', label:'Final Data', lx:1200, ly:120 },
+      { d:'M1200,294 L1200,375' }
+    ];
+
+    const junction = { cx:850, cy:195, r:5 };
+    const dashedBox = { x:760, y:75, w:410, h:295, rx:16 };
+
+    function iconFile(cx,cy){
+      return `<path class="icon-shape" d="M${cx-14},${cy-20} h16 l8,8 v30 h-24 z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+        <path class="icon-shape" d="M${cx+2},${cy-20} v8 h8" fill="none" stroke="currentColor" stroke-width="2"/>
+        <text x="${cx}" y="${cy+6}" text-anchor="middle" font-size="8" font-family="JetBrains Mono, monospace" fill="currentColor">CSV</text>`;
+    }
+    function iconBucket(cx,cy,tint){
+      const fill = tint === 'mint' ? 'rgba(62,232,168,0.16)' : 'rgba(155,135,245,0.12)';
+      return `<ellipse class="icon-shape" cx="${cx}" cy="${cy-16}" rx="18" ry="6" fill="${fill}" stroke="currentColor" stroke-width="1.8"/>
+        <path class="icon-shape" d="M${cx-18},${cy-16} L${cx-13},${cy+18} Q${cx},${cy+25} ${cx+13},${cy+18} L${cx+18},${cy-16}" fill="${fill}" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>`;
+    }
+    function iconLambda(cx,cy){
+      return `<text class="icon-shape" x="${cx}" y="${cy+12}" text-anchor="middle" font-size="36" font-family="Georgia, serif" fill="currentColor">&#955;</text>`;
+    }
+    function iconBug(cx,cy){
+      return `<g class="icon-shape">
+        <ellipse cx="${cx}" cy="${cy}" rx="13" ry="17" fill="none" stroke="currentColor" stroke-width="2"/>
+        <line x1="${cx}" y1="${cy-17}" x2="${cx}" y2="${cy+17}" stroke="currentColor" stroke-width="1.3"/>
+        <line x1="${cx-13}" y1="${cy-7}" x2="${cx-25}" y2="${cy-13}" stroke="currentColor" stroke-width="1.5"/>
+        <line x1="${cx-13}" y1="${cy}" x2="${cx-27}" y2="${cy}" stroke="currentColor" stroke-width="1.5"/>
+        <line x1="${cx-13}" y1="${cy+7}" x2="${cx-25}" y2="${cy+13}" stroke="currentColor" stroke-width="1.5"/>
+        <line x1="${cx+13}" y1="${cy-7}" x2="${cx+25}" y2="${cy-13}" stroke="currentColor" stroke-width="1.5"/>
+        <line x1="${cx+13}" y1="${cy}" x2="${cx+27}" y2="${cy}" stroke="currentColor" stroke-width="1.5"/>
+        <line x1="${cx+13}" y1="${cy+7}" x2="${cx+25}" y2="${cy+13}" stroke="currentColor" stroke-width="1.5"/>
+        <line x1="${cx-5}" y1="${cy-17}" x2="${cx-10}" y2="${cy-27}" stroke="currentColor" stroke-width="1.5"/>
+        <line x1="${cx+5}" y1="${cy-17}" x2="${cx+10}" y2="${cy-27}" stroke="currentColor" stroke-width="1.5"/>
+      </g>`;
+    }
+    function iconFunnel(cx,cy){
+      return `<path class="icon-shape" d="M${cx-16},${cy-14} h32 l-11,16 v13 l-10,5 v-18 z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>`;
+    }
+    function iconCatalog(cx,cy){
+      return `<g class="icon-shape">
+        <rect x="${cx-14}" y="${cy-18}" width="28" height="34" rx="2" fill="none" stroke="currentColor" stroke-width="2"/>
+        <line x1="${cx-8}" y1="${cy-8}" x2="${cx+8}" y2="${cy-8}" stroke="currentColor" stroke-width="1.3"/>
+        <line x1="${cx-8}" y1="${cy}" x2="${cx+8}" y2="${cy}" stroke="currentColor" stroke-width="1.3"/>
+        <path d="M${cx-6},${cy+7} h12 l-4,6 v6 l-4,2 v-8 z" fill="none" stroke="currentColor" stroke-width="1.3"/>
+      </g>`;
+    }
+    function iconChart(cx,cy){
+      return `<g class="icon-shape">
+        <rect x="${cx-19}" y="${cy-16}" width="38" height="32" rx="3" fill="none" stroke="currentColor" stroke-width="2"/>
+        <polyline points="${cx-11},${cy+6} ${cx-3},${cy-4} ${cx+4},${cy+2} ${cx+13},${cy-10}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </g>`;
+    }
+
+    function buildNode(n){
+      const info = 'test';
+      if(n.type === 'box'){
+        const w=n.w, h=n.h;
+        const fill = n.tint === 'mint' ? 'rgba(62,232,168,0.10)' : 'rgba(155,135,245,0.08)';
+        let labelSvg = '';
+        n.label.forEach((line,i)=>{
+          const ty = n.cy + (i - (n.label.length-1)/2)*15 + 4;
+          labelSvg += `<text x="${n.cx}" y="${ty}" text-anchor="middle" class="node-label" font-size="12" font-family="Fraunces, serif">${line}</text>`;
+        });
+        return `<g class="hotspot" data-info="${info}" tabindex="0">
+          <rect class="hit" x="${n.cx-w/2-6}" y="${n.cy-h/2-6}" width="${w+12}" height="${h+12}" rx="10"/>
+          <rect x="${n.cx-w/2}" y="${n.cy-h/2}" width="${w}" height="${h}" rx="8" fill="${fill}" stroke="currentColor" stroke-width="1.6"/>
+          ${labelSvg}
+        </g>`;
+      }
+
+      let iconSvg = '';
+      if(n.type === 'file') iconSvg = iconFile(n.cx,n.cy);
+      else if(n.type === 'bucket') iconSvg = iconBucket(n.cx,n.cy,n.tint);
+      else if(n.type === 'lambda') iconSvg = iconLambda(n.cx,n.cy);
+      else if(n.type === 'bug') iconSvg = iconBug(n.cx,n.cy);
+      else if(n.type === 'funnel') iconSvg = iconFunnel(n.cx,n.cy);
+      else if(n.type === 'catalog') iconSvg = iconCatalog(n.cx,n.cy);
+      else if(n.type === 'chart') iconSvg = iconChart(n.cx,n.cy);
+
+      let badgeSvg = '';
+      if(n.badge){
+        const bx = n.cx - 30, by = n.cy - 32;
+        badgeSvg = `<circle cx="${bx}" cy="${by}" r="11" fill="#1C1638" stroke="currentColor" stroke-width="1.6"/>
+          <text x="${bx}" y="${by+4}" text-anchor="middle" font-size="11" font-family="JetBrains Mono, monospace" fill="currentColor">${n.badge}</text>`;
+      }
+
+      let labelSvg = '';
+      if(n.labelSide === 'left'){
+        n.label.forEach((line,i)=>{
+          const ty = n.cy + (i - (n.label.length-1)/2)*15 + 4;
+          labelSvg += `<text x="${n.cx-32}" y="${ty}" text-anchor="end" class="node-label" font-size="11" font-family="JetBrains Mono, monospace">${line}</text>`;
+        });
+      } else {
+        const startY = n.cy + 40;
+        n.label.forEach((line,i)=>{
+          labelSvg += `<text x="${n.cx}" y="${startY + i*14}" text-anchor="middle" class="node-label" font-size="11" font-family="JetBrains Mono, monospace">${line}</text>`;
+        });
+      }
+
+      const hitH = n.labelSide === 'left' ? 76 : (40 + n.label.length*14 + 16);
+      return `<g class="hotspot" data-info="${info}" tabindex="0">
+        <rect class="hit" x="${n.cx-40}" y="${n.cy-38}" width="80" height="${hitH}" rx="10"/>
+        ${badgeSvg}
+        ${iconSvg}
+        ${labelSvg}
+      </g>`;
+    }
+
+    function buildDiagram(){
+      let markup = `<defs>
+        <marker id="arrowHead" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" markerUnits="strokeWidth">
+          <path d="M0,0 L6,3 L0,6 Z" fill="var(--accent-lilac-soft)"/>
+        </marker>
+      </defs>`;
+
+      markup += `<rect x="${dashedBox.x}" y="${dashedBox.y}" width="${dashedBox.w}" height="${dashedBox.h}" rx="${dashedBox.rx}" fill="none" stroke="var(--accent-lilac)" stroke-opacity="0.45" stroke-width="1.6" stroke-dasharray="6 6"/>`;
+
+      connectors.forEach(c => {
+        markup += `<path d="${c.d}" fill="none" stroke="var(--accent-lilac-soft)" stroke-opacity="0.55" stroke-width="1.6" marker-end="url(#arrowHead)"/>`;
+        if(c.label){
+          markup += `<text x="${c.lx}" y="${c.ly}" text-anchor="middle" class="diagram-flow-label" font-size="11">${c.label}</text>`;
+        }
+      });
+
+      markup += `<circle cx="${junction.cx}" cy="${junction.cy}" r="${junction.r}" fill="var(--accent-mint)" opacity="0.85"/>`;
+
+      groupLabels.forEach(g => {
+        g.lines.forEach((line,i)=>{
+          markup += `<text x="${g.x}" y="${g.y + i*18}" text-anchor="middle" class="diagram-group-label" font-size="13" letter-spacing="0.02em">${line}</text>`;
+        });
+      });
+
+      nodes.forEach(n => { markup += buildNode(n); });
+
+      document.getElementById('pipelineSvg').innerHTML = markup;
+    }
+
+    buildDiagram();
+
+    // ---- tooltip on hotspot hover ----
+    const wrap = document.getElementById('pipelineDiagramWrap');
+    const tooltip = document.getElementById('diagramTooltip');
+
+    wrap.addEventListener('mousemove', (e) => {
+      const hotspot = e.target.closest('.hotspot');
+      if(!hotspot){ tooltip.classList.remove('visible'); return; }
+      const wrapRect = wrap.getBoundingClientRect();
+      tooltip.style.left = (e.clientX - wrapRect.left) + 'px';
+      tooltip.style.top = (e.clientY - wrapRect.top) + 'px';
+      tooltip.textContent = hotspot.dataset.info || 'test';
+      tooltip.classList.add('visible');
+    });
+    wrap.addEventListener('mouseleave', () => tooltip.classList.remove('visible'));
+
+    // ---- modal open / close ----
+    const backdrop = document.getElementById('pipelineModalBackdrop');
+    const closeBtn = document.getElementById('pipelineModalClose');
+    const triggerCard = document.getElementById('projectAwsPipeline');
+
+    function openModal(){
+      backdrop.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeModal(){
+      backdrop.classList.remove('active');
+      document.body.style.overflow = '';
+      tooltip.classList.remove('visible');
+    }
+
+    if(triggerCard) triggerCard.addEventListener('click', openModal);
+    closeBtn.addEventListener('click', closeModal);
+    backdrop.addEventListener('click', (e) => { if(e.target === backdrop) closeModal(); });
+    document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeModal(); });
+  })();
+</script>
+
+</body>
+</html>
